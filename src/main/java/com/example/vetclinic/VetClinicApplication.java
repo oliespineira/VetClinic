@@ -1,4 +1,4 @@
-package com.example.VetClinic;
+package com.example.vetclinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
