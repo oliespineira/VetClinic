@@ -32,6 +32,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Spring Boot forwards errors to /error. Without this line, a 404 or 500
+                        // would turn into a confusing 401, because there is no session to reuse.
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/audit/**").hasRole("CLINIC_MANAGER")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
