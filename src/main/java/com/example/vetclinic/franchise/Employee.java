@@ -1,6 +1,7 @@
 package com.example.vetclinic.franchise;
 
 import com.example.vetclinic.common.exception.BusinessRuleException;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +31,16 @@ public abstract class Employee {
 
     private String name;
 
+    /** Also the login username, so it must be unique. */
+    @Column(nullable = false, unique = true)
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Location location;
+
+    /** BCrypt hash of the login password. Null means this employee cannot log in. */
+    @Column(name = "password_hash")
+    private String passwordHash;
 
     protected Employee() {
     }
@@ -71,8 +78,17 @@ public abstract class Employee {
         this.location = location;
     }
 
+    /** Stores an already-hashed password. Hashing is done by the PasswordEncoder, never here. */
+    public void changePasswordHash(String passwordHash) {
+        if (passwordHash == null || passwordHash.isBlank()) {
+            throw new BusinessRuleException("Password hash cannot be empty");
+        }
+        this.passwordHash = passwordHash;
+    }
+
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
     public Location getLocation() { return location; }
+    public String getPasswordHash() { return passwordHash; }
 }
