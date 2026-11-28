@@ -8,6 +8,7 @@ import com.example.vetclinic.franchise.Employee;
 import com.example.vetclinic.franchise.EmployeeRepository;
 import com.example.vetclinic.franchise.Location;
 import com.example.vetclinic.franchise.LocationRepository;
+import com.example.vetclinic.franchise.VetGeneral;
 import com.example.vetclinic.medical.appointment.exception.AppointmentConflictException;
 import com.example.vetclinic.medical.appointment.exception.AppointmentNotFoundException;
 import com.example.vetclinic.medical.appointment.exception.InvalidAppointmentException;
@@ -57,8 +58,8 @@ class AppointmentServiceTest {
         Client owner = new Client("OWN-0001", "Jane Doe", "jane@example.com", "0123");
         rex = new Animal("PET-0001", "Rex", Species.DOG, owner);
         milo = new Animal("PET-0002", "Milo", Species.CAT, owner);
-        vet = new Employee(1L, "Dr Smith", "smith@clinic.com");
-        otherVet = new Employee(2L, "Dr Jones", "jones@clinic.com");
+        vet = new VetGeneral(1L, "Dr Smith", "smith@clinic.com");
+        otherVet = new VetGeneral(2L, "Dr Jones", "jones@clinic.com");
         location = new Location(1L, "Main clinic", "1 High St");
     }
 
