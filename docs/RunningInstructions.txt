@@ -1,0 +1,65 @@
+VETCLINIC - RUNNING INSTRUCTIONS
+================================
+
+1. REQUIREMENTS
+---------------
+- Java 21 (JDK). Check with:  java -version
+  [TODO team: confirm once pom.xml is set to Java 21 and the JAR is tested on Java 21]
+- Nothing else. The database (H2) is built in and runs in memory.
+
+2. START THE APPLICATION
+------------------------
+Option A - from the executable JAR (recommended):
+    java -jar TeamName_VetClinic.jar
+
+Option B - from the source code (in the project folder):
+    macOS / Linux:  ./mvnw spring-boot:run
+    Windows:        mvnw.cmd spring-boot:run
+
+Wait until the console shows:  Started VetClinicApplication
+
+To run the unit tests:
+    ./mvnw test        (Windows: mvnw.cmd test)
+
+3. WHERE TO OPEN IT
+-------------------
+- The application is a REST API on port 8080:  http://localhost:8080
+- All endpoints are under /api, for example:   http://localhost:8080/api/medical-records/1
+- If port 8080 is busy, start it on another port:
+    java -jar TeamName_VetClinic.jar --server.port=8081
+
+4. LOGINS (one per role)
+------------------------
+Every request needs a login (HTTP Basic). In Postman: Authorization tab -> Basic Auth.
+With curl:  curl -u EMAIL:PASSWORD http://localhost:8080/api/...
+
+    Role             Email                         Password
+    ---------------  ----------------------------  ------------
+    Receptionist     reception@pawcare.example     reception123
+    General vet      vet@pawcare.example           vet123
+    Surgeon          surgeon@pawcare.example       surgeon123
+    Clinic manager   manager@pawcare.example       manager123
+
+5. SAMPLE DATA (loaded automatically at startup)
+------------------------------------------------
+- Clinic "PawCare Veterinary Group" with two locations: Madrid Centro and Madrid Norte.
+- The four employees above, all working at Madrid Centro.
+- Owner Jane Doe (OWN-0001) and her dog Rex (PET-0001).
+  [TODO Person 1: replace with the full clients and animals sample data]
+- [TODO Person 1: products and stock]
+- [TODO Person 4: invoices / payments, if any]
+All names and data are invented.
+
+Suggested scenario to try (as the surgeon / reception / manager):
+  1. As vet:       POST /api/medical-records  {"animalId":"PET-0001","weightKg":12.5,"diagnosis":"Torn knee ligament"}
+  2. As surgeon:   POST /api/medical-records/1/surgeries  {"procedure":"Knee ligament repair","estimatedCost":300.00}
+  3. As surgeon:   POST /api/surgeries/1/complete  -> rejected: no signed consent
+  4. As reception: POST /api/surgeries/1/consent  {"accepted":true}
+  5. As surgeon:   POST /api/surgeries/1/complete  {"finalCost":340.00,"followUpStart":"2026-12-15T10:00:00","followUpMinutes":30}
+                   -> completed, follow-up appointment created
+  6. As manager:   GET /api/audit  -> shows the cost and status changes
+
+6. DATABASE
+-----------
+No setup needed. The JAR uses an in-memory H2 database, created at startup.
+Note: data is reset every time the application restarts.
